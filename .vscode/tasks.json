@@ -1,0 +1,47 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "SFML Build and Run",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                // Tell the compiler to use the C++17 standard
+                "-std=c++17",
+
+                // Compile all .cpp files in the workspace folder
+                "${workspaceFolder}\\*.cpp",
+
+                // Debugging information
+                "-g",
+
+                // Output executable name
+                "-o",
+                "${workspaceFolder}\\main.exe",
+
+                // Tell the compiler where to find SFML headers
+                "-I",
+                "C:\\SFML-2.5.1\\include",
+
+                // Tell the linker where to find SFML library files
+                "-L",
+                "C:\\SFML-2.5.1\\lib",
+
+                // Link against the required SFML modules
+                "-lsfml-graphics",
+                "-lsfml-window",
+                "-lsfml-system",
+                "-lsfml-audio",
+                "-lsfml-network"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "Compiler: C:\\mingw64\\bin\\g++.exe"
+        }
+    ]
+}
