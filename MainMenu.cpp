@@ -10,7 +10,7 @@ MainMenu::MainMenu(float width, float height, sf::Font &font) : font(font)
     float centerX = width / 2.0f;
 
     title.setFont(font);
-    title.setString("TRON");
+    title.setString("Photron");
     title.setCharacterSize(100);
     title.setFillColor(sf::Color::White);
     title.setStyle(sf::Text::Bold);
