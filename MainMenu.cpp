@@ -9,14 +9,16 @@ MainMenu::MainMenu(float width, float height, sf::Font &font) : font(font)
 {
     float centerX = width / 2.0f;
 
+    // Game Title
     title.setFont(font);
-    title.setString("Photron");
+    title.setString("PHOTRON");
     title.setCharacterSize(100);
     title.setFillColor(sf::Color::White);
     title.setStyle(sf::Text::Bold);
     centerMenuTextOrigin(title);
     title.setPosition(sf::Vector2f(centerX, height / 4.0f));
 
+    // Single Player Button
     singlePlayerButton.setFont(font);
     singlePlayerButton.setString("1 Player");
     singlePlayerButton.setCharacterSize(40);
@@ -24,6 +26,7 @@ MainMenu::MainMenu(float width, float height, sf::Font &font) : font(font)
     centerMenuTextOrigin(singlePlayerButton);
     singlePlayerButton.setPosition(sf::Vector2f(centerX, height / 2.0f - 50));
 
+    // Two Players Button
     twoPlayerButton.setFont(font);
     twoPlayerButton.setString("2 Players");
     twoPlayerButton.setCharacterSize(40);
@@ -31,24 +34,32 @@ MainMenu::MainMenu(float width, float height, sf::Font &font) : font(font)
     centerMenuTextOrigin(twoPlayerButton);
     twoPlayerButton.setPosition(sf::Vector2f(centerX, height / 2.0f + 50));
 
+    // How to Play Button
     howToPlayButton.setFont(font);
     howToPlayButton.setString("How To Play");
     howToPlayButton.setCharacterSize(24);
     howToPlayButton.setFillColor(sf::Color(200, 200, 200));
     centerMenuTextOrigin(howToPlayButton);
     howToPlayButton.setPosition(sf::Vector2f(centerX, height / 2.0f + 150));
+
+    // Exit Text
+    exitText.setFont(font);
+    exitText.setString("Press ESC to Exit");
+    exitText.setCharacterSize(20);
+    exitText.setFillColor(sf::Color(150, 150, 150));
+    centerMenuTextOrigin(exitText);
+    exitText.setPosition(sf::Vector2f(centerX, howToPlayButton.getPosition().y + 50));
 }
 
-// Updated to draw to any RenderTarget (window or texture)
 void MainMenu::draw(sf::RenderTarget &target)
 {
     target.draw(title);
     target.draw(singlePlayerButton);
     target.draw(twoPlayerButton);
     target.draw(howToPlayButton);
+    target.draw(exitText);
 }
 
-// Updated to use the pre-calculated mouse position
 void MainMenu::handleInput(sf::Event event, sf::Vector2f mousePos)
 {
     singlePlayerButton.setFillColor(sf::Color::Red);

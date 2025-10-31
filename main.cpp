@@ -14,7 +14,7 @@ int main()
     // --- NEW RENDER-TO-TEXTURE STRATEGY ---
 
     // 1. Create the final display window in fullscreen.
-    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Photron", sf::Style::Fullscreen);
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "PHOTRON", sf::Style::Fullscreen);
     window.setFramerateLimit(60);
     window.setMouseCursorVisible(true); // Ensure cursor is visible
 
