@@ -11,7 +11,7 @@
 const float GAME_WIDTH = 800.0f;
 const float GAME_HEIGHT = 800.0f;
 
-enum class GameState { PLAYING, GAME_OVER };        
+enum class GameState { PLAYING, GAME_OVER };
 enum class Direction { UP, DOWN, LEFT, RIGHT };   //Key
 
 struct Position {
@@ -141,7 +141,7 @@ public:
     }
 
 
-    // 4) READ INPUT (Key pressed) + 6) SELECTION BODY 
+    // 4) READ INPUT (Key pressed)  6) SELECTION BODY 
     void handleInput() {
         // Player 1 Input (by WASD Key)
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
@@ -176,18 +176,23 @@ private:
     // 6) SELECTION BODY for Output based on key pressed by respective players (Calculate next position)
     Position getNextPosition(const Position &position, Direction direction) const {
         Position nextPos = position;
+        
+        // Use pointers for x and y 
+        int* ptrX = &nextPos.x;
+        int* ptrY = &nextPos.y;
+        
         switch (direction) {
             case Direction::UP: 
-                nextPos.y--; 
+                *ptrY = *ptrY - 1; 
                 break;
             case Direction::DOWN: 
-                nextPos.y++; 
+                *ptrY = *ptrY + 1; 
                 break;
             case Direction::LEFT: 
-                nextPos.x--; 
+                *ptrX = *ptrX - 1; 
                 break;
             case Direction::RIGHT: 
-                nextPos.x++; 
+                *ptrX = *ptrX + 1; 
                 break;
         }
         return nextPos;
@@ -199,7 +204,7 @@ private:
             {Direction::UP, Direction::DOWN}, {Direction::DOWN, Direction::UP}, 
             {Direction::LEFT, Direction::RIGHT}, {Direction::RIGHT, Direction::LEFT}
         };
-        
+
         //only valid movement is considered
         for (auto& p : players) {
             if (oppositeMap.at(p.direction) != p.intendedDirection) {
@@ -211,14 +216,23 @@ private:
 // 3) ASSIGN/STORE initial position value to trails array
     void initializePlayers() {
         players.clear();
+        
         Player p1;
-        p1.id = 1; p1.position = {GRID_SIZE / 4, GRID_SIZE / 2}; 
+        p1.id = 1; 
+        int* p1x = &p1.position.x;
+        int* p1y = &p1.position.y;
+        *p1x = GRID_SIZE / 4;       
+        *p1y = GRID_SIZE / 2;       
         p1.direction = Direction::RIGHT; p1.intendedDirection = Direction::RIGHT;
         p1.headColor = sf::Color(252, 165, 165); p1.trailColor = sf::Color(153, 27, 27);
         players.push_back(p1);
 
         Player p2;
-        p2.id = 2; p2.position = {GRID_SIZE * 3 / 4, GRID_SIZE / 2}; 
+        p2.id = 2; 
+        int* p2x = &p2.position.x;
+        int* p2y = &p2.position.y;
+        *p2x = GRID_SIZE * 3 / 4;    
+        *p2y = GRID_SIZE / 2;       
         p2.direction = Direction::LEFT; p2.intendedDirection = Direction::LEFT;
         p2.headColor = sf::Color(147, 197, 253); p2.trailColor = sf::Color(30, 58, 138);
         players.push_back(p2);
@@ -230,19 +244,23 @@ private:
             player.trail.push_front(player.position);
             player.position = getNextPosition(player.position, player.direction);
             
+            
+            int* ptrX = &player.position.x;
+            int* ptrY = &player.position.y;
+            
     //Recalculate position by considering the case when trails exceed screen size
-            if (player.position.x < 0) {
-                player.position.x = GRID_SIZE - 1;
+            if (*ptrX < 0) {
+                *ptrX = GRID_SIZE - 1;
             }
-            else if (player.position.x >= GRID_SIZE) {
-                player.position.x = 0;
+            else if (*ptrX >= GRID_SIZE) {
+                *ptrX = 0;
             }
 
-            if (player.position.y < 0) {
-                player.position.y = GRID_SIZE - 1;
+            if (*ptrY < 0) {
+                *ptrY = GRID_SIZE - 1;
             }
-            else if (player.position.y >= GRID_SIZE) {
-                player.position.y = 0;
+            else if (*ptrY >= GRID_SIZE) {
+                *ptrY = 0;
             }
         }
     }
@@ -269,13 +287,13 @@ private:
         if (!losers.empty()) {
             gameOver = true;
             if (losers.size() > 1 || (losers.front() == 1 && losers.back() == 2)) {
-                winner = 0;                             // Draw
+                winner = 0;       // Draw
             }                             
             else if (losers.front() == 1) {
-                winner = 2;                             // Player 1 crashed, Player 2 wins
+                winner = 2;       // Player 1 crashed, Player 2 wins
             }
             else {
-                winner = 1;                            // Player 2 crashed, Player 1 wins
+                winner = 1;       // Player 2 crashed, Player 1 wins
             }               
         }
     }
@@ -375,15 +393,18 @@ int main()
     float windowRatio = windowWidth / windowHeight;
     float gameRatio = GAME_WIDTH / GAME_HEIGHT;
     float scale = 1.0f;
+    
     sf::Vector2f position(0, 0);
+    float* ptrPosX = &position.x;
+    float* ptrPosY = &position.y;
 
     if (windowRatio > gameRatio) {
         scale = windowHeight / GAME_HEIGHT;
-        position.x = (windowWidth - (GAME_WIDTH * scale)) / 2.0f;
+        *ptrPosX = (windowWidth - (GAME_WIDTH * scale)) / 2.0f;
     } 
     else {
         scale = windowWidth / GAME_WIDTH;
-        position.y = (windowHeight - (GAME_HEIGHT * scale)) / 2.0f;
+        *ptrPosY = (windowHeight - (GAME_HEIGHT * scale)) / 2.0f;
     }
     gameSprite.setScale(scale, scale);
     gameSprite.setPosition(position);
@@ -421,8 +442,12 @@ int main()
             // Enable mouse controlling
             sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
             sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
-            worldPos.x = (worldPos.x - gameSprite.getPosition().x) / gameSprite.getScale().x;
-            worldPos.y = (worldPos.y - gameSprite.getPosition().y) / gameSprite.getScale().y;
+            
+            float* wPosX = &worldPos.x;
+            float* wPosY = &worldPos.y;
+            
+            *wPosX = (*wPosX - gameSprite.getPosition().x) / gameSprite.getScale().x;
+            *wPosY = (*wPosY - gameSprite.getPosition().y) / gameSprite.getScale().y;
             
             if (gameState == GameState::GAME_OVER) {
                 gameOver.handleInput(event, worldPos);
