@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
-#include <vector>
-#include <list>
+#include <vector>                                   //to store all info of a player (including coordinates)
+#include <list>                                     //to store coordinates only
 #include <string>
-#include <iostream>
+#include <iostream>                                 // External library (col 1) ; STL (col 2-9)
 #include <cstdlib>
 #include <ctime>
 #include <map>
@@ -12,12 +12,12 @@ const float GAME_WIDTH = 800.0f;
 const float GAME_HEIGHT = 800.0f;
 
 enum class GameState { PLAYING, GAME_OVER };
-enum class Direction { UP, DOWN, LEFT, RIGHT };   //Key
+enum class Direction { UP, DOWN, LEFT, RIGHT };   // Define/customize inputs for Key
 
 struct Position {
     int x;
     int y;
-    bool operator==(const Position& other) const {
+    bool operator==(const Position &other) const {
         return x == other.x && y == other.y;
     }
 };
@@ -27,109 +27,117 @@ struct Player {
     Position position;
     Direction direction;
     Direction intendedDirection;
-    std::list<Position> trail;           //trail array
+    std::list<Position> trail;           // 1D array to store x,y coordinates 
     sf::Color headColor;
     sf::Color trailColor;
 };
 
+//User-defined functions
 
-
-// Graphics part(Text) to assign/define Text when game ends
+// 2) Graphics part(Text) to assign/define Displayed Text when game ends
 class GameOver {
-public:
-    GameOver(sf::Font &font, float width, float height) : font(font) {
-        gameOverText.setFont(font);
-        gameOverText.setString("Game Over");
-        gameOverText.setCharacterSize(80);
-        gameOverText.setStyle(sf::Text::Bold);
-        gameOverText.setFillColor(sf::Color::White);
+    public:
+        GameOver(sf::Font &font, float width, float height) : font(font) {
+            gameOverText.setFont(font);
+            gameOverText.setString("Game Over");
+            gameOverText.setCharacterSize(80);
+            gameOverText.setStyle(sf::Text::Bold);
+            gameOverText.setFillColor(sf::Color::White);
 
-        winnerText.setFont(font);
-        winnerText.setCharacterSize(50);
+            winnerText.setFont(font);
+            winnerText.setCharacterSize(50);
 
-        restartText.setFont(font);
-        restartText.setString("Play Again");
-        restartText.setCharacterSize(30);
-        restartText.setFillColor(sf::Color::White);
+            restartText.setFont(font);
+            restartText.setString("Play Again");
+            restartText.setCharacterSize(30);
+            restartText.setFillColor(sf::Color::White);
 
-        exitText.setFont(font);
-        exitText.setString("Exit");
-        exitText.setCharacterSize(30);
-        exitText.setFillColor(sf::Color::White);
+            exitText.setFont(font);
+            exitText.setString("Exit");
+            exitText.setCharacterSize(30);
+            exitText.setFillColor(sf::Color::White);
 
-        sf::FloatRect goRect = gameOverText.getLocalBounds();
-        gameOverText.setOrigin(goRect.left + goRect.width / 2.0f, goRect.top + goRect.height / 2.0f);
-        gameOverText.setPosition(width / 2.0f, height / 3.0f);
+            sf::FloatRect goRect = gameOverText.getLocalBounds();
+            gameOverText.setOrigin(goRect.left + goRect.width / 2.0f, goRect.top + goRect.height / 2.0f);
+            gameOverText.setPosition(width / 2.0f, height / 3.0f);
 
-        sf::FloatRect rtRect = restartText.getLocalBounds();
-        restartText.setOrigin(rtRect.left + rtRect.width / 2.0f, rtRect.top + rtRect.height / 2.0f);
-        restartText.setPosition(width / 2.0f, height * 2.0f / 3.0f);
+            sf::FloatRect rtRect = restartText.getLocalBounds();
+            restartText.setOrigin(rtRect.left + rtRect.width / 2.0f, rtRect.top + rtRect.height / 2.0f);
+            restartText.setPosition(width / 2.0f, height * 2.0f / 3.0f);
 
-        sf::FloatRect exRect = exitText.getLocalBounds();
-        exitText.setOrigin(exRect.left + exRect.width / 2.0f, exRect.top + exRect.height / 2.0f);
-        exitText.setPosition(width / 2.0f, restartText.getPosition().y + 60);
-    }
-
-    // User-defined functions : Graphics to assign/define winner Text 9)
-    void setWinner(int winnerId) {
-    //SELECTION BODY , define required result
-        if (winnerId == 0) {
-            winnerText.setString("Draw!");
-            winnerText.setFillColor(sf::Color::White);
-        } else {
-            winnerText.setString("Player " + std::to_string(winnerId) + " Wins!");
-            winnerText.setFillColor(winnerId == 1 ? sf::Color(252, 165, 165) : sf::Color(147, 197, 253));
+            sf::FloatRect exRect = exitText.getLocalBounds();
+            exitText.setOrigin(exRect.left + exRect.width / 2.0f, exRect.top + exRect.height / 2.0f);
+            exitText.setPosition(width / 2.0f, restartText.getPosition().y + 60);
         }
-    //Graphics part
-        sf::FloatRect wtRect = winnerText.getLocalBounds();
-        winnerText.setOrigin(wtRect.left + wtRect.width / 2.0f, wtRect.top + wtRect.height / 2.0f);
-        winnerText.setPosition(gameOverText.getPosition().x, gameOverText.getPosition().y + 100);
-    }
-    //User-defined functions: Graphics part
-    void draw(sf::RenderTarget &target) {
-        target.draw(gameOverText);
-        target.draw(winnerText);
-        target.draw(restartText);
-        target.draw(exitText);
-    }
 
-   
-    // User-defined Function: to detect button pressed by user (mouse)
-    void handleInput(const sf::Event& event, sf::Vector2f mousePos) {
-        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-            if (restartText.getGlobalBounds().contains(mousePos)) {
-                restartClicked = true;
+        // 2) User-defined functions : Graphics to assign/define winner Text for 9)
+        void setWinner(int winnerId) {
+        //SELECTION BODY , define required result
+            if (winnerId == 0) {
+                winnerText.setString("Draw!");
+                winnerText.setFillColor(sf::Color::White);
+            } else {
+                winnerText.setString("Player " + std::to_string(winnerId) + " Wins!");
+                winnerText.setFillColor(winnerId == 1 ? sf::Color(252, 165, 165) : sf::Color(147, 197, 253));
             }
-            else if (exitText.getGlobalBounds().contains(mousePos)) {
-                exitClicked = true;
+        //Graphics part
+            sf::FloatRect wtRect = winnerText.getLocalBounds();
+            winnerText.setOrigin(wtRect.left + wtRect.width / 2.0f, wtRect.top + wtRect.height / 2.0f);
+            winnerText.setPosition(gameOverText.getPosition().x, gameOverText.getPosition().y + 100);
+        }
+        //User-defined functions: Graphics part
+        void draw(sf::RenderTarget &target) {
+            target.draw(gameOverText);
+            target.draw(winnerText);
+            target.draw(restartText);
+            target.draw(exitText);
+        }
+
+    
+        // User-defined Function: to detect button pressed by user (mouse)
+        void handleInput(const sf::Event& event, sf::Vector2f mousePos) {
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                if (restartText.getGlobalBounds().contains(mousePos)) {
+                    restartClicked = true;
+                }
+                else if (exitText.getGlobalBounds().contains(mousePos)) {
+                    exitClicked = true;
+                }
             }
         }
-    }
 
-    bool isRestartClicked() const { return restartClicked; }
-    bool isExitClicked() const { return exitClicked; }
+        // User-defined functions: Assign (bool) value (continue/end) after game ends
+        bool isRestartClicked() const { 
+            return restartClicked; 
+        }
 
-    //Reinitialise value (continue / end) after game ends
-    void reset() {
-        restartClicked = false;
-        exitClicked = false;
-    }
+        bool isExitClicked() const { 
+            return exitClicked; 
+        }
 
-private:
-    sf::Font &font;
-    sf::Text gameOverText;
-    sf::Text winnerText;
-    sf::Text restartText;
-    sf::Text exitText;
-    bool restartClicked = false;
-    bool exitClicked = false;
+        //User-defined functions: Reinitialise value (continue / end) after game ends
+        void reset() {
+            restartClicked = false;
+            exitClicked = false;
+        }
+
+    private:
+        sf::Font &font;
+        sf::Text gameOverText;
+        sf::Text winnerText;
+        sf::Text restartText;
+        sf::Text exitText;
+        bool restartClicked = false;
+        bool exitClicked = false;
 };
 
 
 
 class Game {
 public:
-    Game(sf::Font &font) : font(font) { srand(time(0)); }
+    Game(sf::Font &font) : font(font) { 
+        srand(time(0)); 
+    }
     
     // 3) Assign/Initialise value 
     void start() {
@@ -177,21 +185,21 @@ private:
     Position getNextPosition(const Position &position, Direction direction) const {
         Position nextPos = position;
         
-        // Use pointers for x and y 
+        // Attempt to Use pointers for x and y coordinates
         int* ptrX = &nextPos.x;
         int* ptrY = &nextPos.y;
         
         switch (direction) {
-            case Direction::UP: 
+            case Direction::UP : 
                 *ptrY = *ptrY - 1; 
                 break;
-            case Direction::DOWN: 
+            case Direction::DOWN : 
                 *ptrY = *ptrY + 1; 
                 break;
-            case Direction::LEFT: 
+            case Direction::LEFT : 
                 *ptrX = *ptrX - 1; 
                 break;
-            case Direction::RIGHT: 
+            case Direction::RIGHT : 
                 *ptrX = *ptrX + 1; 
                 break;
         }
@@ -248,7 +256,7 @@ private:
             int* ptrX = &player.position.x;
             int* ptrY = &player.position.y;
             
-    //Recalculate position by considering the case when trails exceed screen size
+            //Recalculate position by considering the case when trails exceed screen size
             if (*ptrX < 0) {
                 *ptrX = GRID_SIZE - 1;
             }
@@ -264,6 +272,7 @@ private:
             }
         }
     }
+    
 
     //User-defined Functions: 8) Detect Collision
     void checkCollisions() {
@@ -370,11 +379,12 @@ private:
     float tickTimer = 0.0f;
 };
 
-
+//Main function
 
 int main()
 {
-// Graphics part  (display window)
+    
+    // Graphics part  (display window)
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Neon Cycle Duel", sf::Style::Fullscreen);
     window.setFramerateLimit(60);
     window.setMouseCursorVisible(true);
@@ -387,7 +397,7 @@ int main()
 
     sf::Sprite gameSprite(gameTexture.getTexture());
 
-    //Window Scaling
+    //Graphics:Window Scaling
     float windowWidth = static_cast<float>(window.getSize().x);
     float windowHeight = static_cast<float>(window.getSize().y);
     float windowRatio = windowWidth / windowHeight;
@@ -409,14 +419,14 @@ int main()
     gameSprite.setScale(scale, scale);
     gameSprite.setPosition(position);
 
-    // Text
+    // Graphics: Initialise Text Font
     sf::Font font;
     if (!font.loadFromFile("pixel_font.ttf")) {
         std::cerr << "Error: Could not load pixel_font.ttf" << std::endl;
         return -1;
     }
     
-    // Windows,text initialising
+    // Initialise for Windows and text 
     GameState gameState = GameState::PLAYING; 
     Game game(font);
     GameOver gameOver(font, GAME_WIDTH, GAME_HEIGHT);
@@ -430,7 +440,6 @@ int main()
         while (window.pollEvent(event))
         {
             //Exit program
-            //
             if (event.type == sf::Event::Closed) {
                 window.close();
             }             
@@ -454,13 +463,13 @@ int main()
             }
         }
 
-      // 9) SELECTION BODY to display Winner text (required result) with graphics
+         // 9) SELECTION BODY to display Winner text (required result) with graphics
         if (gameState == GameState::PLAYING && game.isGameOver()) {
             gameState = GameState::GAME_OVER;
             gameOver.setWinner(game.getWinner());
         }
 
-      // 6) SELECTION BODY continue or exit program  (return 0)
+        // 6) SELECTION BODY continue or exit program  (return 0)
         if (gameState == GameState::GAME_OVER) {
             if (gameOver.isRestartClicked()) {
                 gameState = GameState::PLAYING;
@@ -477,7 +486,8 @@ int main()
             game.update();
         }
 
-    // Graphics part
+
+        // Graphics part
         gameTexture.clear(sf::Color::Black);
         
         if (gameState == GameState::PLAYING) {
@@ -487,9 +497,7 @@ int main()
             game.draw(gameTexture); 
             gameOver.draw(gameTexture);
         }
-        
         gameTexture.display();
-
         window.clear(sf::Color::Black);
         window.draw(gameSprite);
         window.display();
