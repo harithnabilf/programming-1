@@ -1,6 +1,6 @@
-# Photron (Neon Cycle Duel)
+# Photron
 
-A 2-player local multiplayer arcade game built in C++ using the Simple and Fast Multimedia Library (SFML). Developed as a programming project during the Foundation in Physical Science (PASUM) program at Universiti Malaya.
+A 2-player local multiplayer arcade game built in C++ using the Simple and Fast Multimedia Library (SFML). Developed as a programming project during the Foundation in Physical Science program at Universiti Malaya.
 
 The game is inspired by classic Tron light cycle mechanics. Two players navigate a 2D grid arena, each leaving behind an impassable neon light trail. The objective is to outmaneuver the opposing player without crashing into any trail or the boundary walls.
 

@@ -375,7 +375,7 @@ private:
 int main()
 {
 // Graphics part  (display window)
-    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Neon Cycle Duel", sf::Style::Fullscreen);
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Photron", sf::Style::Fullscreen);
     window.setFramerateLimit(60);
     window.setMouseCursorVisible(true);
    
